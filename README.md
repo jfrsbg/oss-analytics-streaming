@@ -22,7 +22,7 @@ minikube start --cpus=2 \
 ```
 
 ## Storage class
-After creating a minikube cluster, there're some caveats that needs to be addressed. The minikube's default storage class don`t work with more than 1 node by design, which means kafka will fail as it needs to write files on disk. To fix the issue, we mneed to remove the default storage class, and then create another one that works with multi node
+After creating a minikube cluster, there're some caveats that needs to be addressed. The minikube's default storage class don`t work with more than 1 node by design, which means kafka will fail as it needs to write files on disk. To fix the issue, we need to remove the default storage class, and then create another one that works with multi node
 
 ```sh 
 kubectl delete sc default
@@ -48,11 +48,11 @@ kubens kafka-operator
 We have to make sure the operator will watch kafka and kafka-operator namespace. That's why we have to install the RoleBindings for both kafka and kafka-operator namespaces:
 
 ```sh 
-kubectl create -f install/cluster-operator/020-RoleBinding-strimzi-cluster-operator.yaml -n <namespace>
+kubectl create -f strimzi/install/cluster-operator/020-RoleBinding-strimzi-cluster-operator.yaml -n <namespace>
 
-kubectl create -f install/cluster-operator/023-RoleBinding-strimzi-cluster-operator.yaml -n <namespace>
+kubectl create -f strimzi/install/cluster-operator/023-RoleBinding-strimzi-cluster-operator.yaml -n <namespace>
 
-kubectl create -f install/cluster-operator/031-RoleBinding-strimzi-cluster-operator-entity-operator-delegation.yaml -n <namespace>
+kubectl create -f strimzi/install/cluster-operator/031-RoleBinding-strimzi-cluster-operator-entity-operator-delegation.yaml -n <namespace>
 ```
 
 Now it's time to deploy the CRDs and the operator
