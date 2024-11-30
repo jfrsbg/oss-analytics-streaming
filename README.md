@@ -74,3 +74,23 @@ Install kafka connect
 ```sh 
 kubectl apply -f strimzi/examples/connect/kafka-connect.yaml
 ```
+
+# Running the Python Producer
+
+Install poetry
+
+```sh 
+pip install poetry
+```
+
+Install the project
+
+```sh 
+cd python-kafka-producer
+poetry install
+```
+
+Activate the virtual env
+```sh 
+source .venv/bin/activate
+```
