@@ -1,40 +1,60 @@
-from random import choice
 from confluent_kafka import Producer
-import socket
+import json
+import time
+import random
+from datetime import datetime
 
-if __name__ == '__main__':
+# Kafka configuration
+kafka_config = {
+    'bootstrap.servers': 'localhost:9092',  # Replace with your Kafka broker address
+    'client.id': 'python-events-producer',
+}
 
-    config = {
-        # User-specific properties that you must set
-        'bootstrap.servers': 'localhost:9092',
-        'client.id': socket.gethostname()
+# Initialize the producer
+producer = Producer(kafka_config)
+
+# Callback for delivery report
+def delivery_report(err, msg):
+    if err is not None:
+        print(f"Message delivery failed: {err}")
+    else:
+        print(f"Message delivered to {msg.topic()} [{msg.partition()}] at offset {msg.offset()}")
+
+# Simulated user activity data
+def generate_user_activity():
+    return {
+        "user_id": random.randint(1, 1000),
+        "event_type": random.choice(["login", "logout", "purchase", "click"]),
+        "timestamp": datetime.utcnow().isoformat(),
+        "metadata": {
+            "browser": random.choice(["Chrome", "Firefox", "Safari", "Edge"]),
+            "device": random.choice(["Desktop", "Mobile", "Tablet"]),
+        }
     }
 
-    # Create Producer instance
-    producer = Producer(config)
-
-    # Optional per-message delivery callback (triggered by poll() or flush())
-    # when a message has been successfully delivered or permanently
-    # failed delivery (after retries).
-    def delivery_callback(err, msg):
-        if err:
-            print('ERROR: Message failed delivery: {}'.format(err))
-        else:
-            print("Produced event to topic {topic}: key = {key:12} value = {value:12}".format(
-                topic=msg.topic(), key=msg.key().decode('utf-8'), value=msg.value().decode('utf-8')))
-
-    # Produce data by selecting random values from these lists.
-    topic = "topic1"
-    user_ids = ['eabara', 'jsmith', 'sgarcia', 'jbernard', 'htanaka', 'awalther']
-    products = ['book', 'alarm clock', 't-shirts', 'gift card', 'batteries']
-
-    count = 0
-    for _ in range(10):
-        user_id = choice(user_ids)
-        product = choice(products)
-        producer.produce(topic, product, user_id, callback=delivery_callback)
-        count += 1
-
-    # Block until the messages are sent.
-    producer.poll(10000)
-    producer.flush()
+# Main producer loop
+if __name__ == "__main__":
+    topic = "website-events"  # Replace with your Kafka topic name
+    
+    try:
+        while True:
+            # Generate a message
+            message = generate_user_activity()
+            
+            # Produce message to Kafka
+            producer.produce(
+                topic=topic,
+                key=str(message["user_id"]),
+                value=json.dumps(message),
+                callback=delivery_report
+            )
+            
+            # Flush to ensure delivery
+            producer.flush()
+            
+            # Wait for a while before sending the next message
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("Producer stopped.")
+    finally:
+        producer.flush()
