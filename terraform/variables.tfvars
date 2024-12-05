@@ -1,6 +1,9 @@
+#provider
 project_id       = "<YOUR_PROJECT_ID>"
 credentials_path = "<YOUR_CREDENTIALS_JSON_PATH>"
 region           = "us-central1"
+
+#cluster config
 zone             = "us-central1-a"
 node_count       = 3
 min_node_count   = 3
