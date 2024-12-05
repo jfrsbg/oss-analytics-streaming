@@ -1,1 +1,3 @@
 python-kafka-producer/.venv/
+.terraform
+.terraform.lock.hcl

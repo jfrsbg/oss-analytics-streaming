@@ -94,3 +94,23 @@ Activate the virtual env
 ```sh 
 source .venv/bin/activate
 ```
+
+# Deploying Apache Pinot
+
+Create a new Namespace
+```sh 
+kubectl create ns pinot
+```
+
+Add the repo
+```sh 
+helm repo add pinot https://raw.githubusercontent.com/apache/pinot/master/helm
+```
+
+helm install pinot pinot/pinot \
+    -n pinot \
+    --set cluster.name=pinot \
+    --set server.replicaCount=2 \
+    --set controller.persistence.storageClass="local-path" \
+    --set server.persistence.storageClass="local-path" \
+    --set minionStateless.persistence.storageClass="local-path"
