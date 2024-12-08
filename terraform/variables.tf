@@ -28,12 +28,6 @@ variable "node_pool_name" {
   default     = "primary-node-pool"
 }
 
-variable "node_count" {
-  description = "The number of nodes in the node pool"
-  type        = number
-  default     = 3
-}
-
 variable "machine_type" {
   description = "The machine type for the node pool"
   type        = string

@@ -1,11 +1,12 @@
 #provider
-project_id       = "<YOUR_PROJECT_ID>"
-credentials_path = "<YOUR_CREDENTIALS_JSON_PATH>"
+project_id       = "data-ana-443821"
+credentials_path = "~/Documents/oss-analytics-streaming/gcloud-credentials.json"
 region           = "us-central1"
 
 #cluster config
-zone             = "us-central1-a"
-node_count       = 3
-min_node_count   = 3
-max_node_count   = 5
-cluster_name     = "cluster-straming-analytics"
+zone           = "us-central1-a"
+min_node_count = 3
+max_node_count = 5
+cluster_name   = "cluster-streaming-analytics"
+node_pool_name = "streaming-node-pool"
+machine_type   = "e2-standard-2"
