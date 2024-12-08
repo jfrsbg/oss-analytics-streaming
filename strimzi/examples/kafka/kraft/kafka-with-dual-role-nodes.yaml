@@ -9,13 +9,17 @@ spec:
   roles:
     - controller
     - broker
+  resources:
+    requests:
+      memory: 3Gi
+      cpu: 500m
   storage:
     type: jbod
     volumes:
       - id: 0
         type: persistent-claim
-        size: 100Gi
-        class: local-path
+        size: 10Gi
+        class: standard
         deleteClaim: false
         kraftMetadata: shared
 ---
@@ -33,7 +37,7 @@ spec:
     listeners:
       - name: plain
         port: 9092
-        type: nodeport
+        type: loadbalancer
         tls: false
       - name: tls
         port: 9093
@@ -46,5 +50,9 @@ spec:
       default.replication.factor: 3
       min.insync.replicas: 2
   entityOperator:
-    topicOperator: {}
+    topicOperator:
+      resources:
+        requests:
+          memory: 512Mi
+          cpu: 500m
     #userOperator: {}

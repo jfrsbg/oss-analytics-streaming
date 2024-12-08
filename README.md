@@ -11,23 +11,41 @@ Repository aims to deliver a fully open-source streaming data platform. The foll
 - Kubens
 - kubernetes 1.25+
 - Strimzi kafka
+- terraform 1.10+
 
 # Installing components
 
-## Minikube
+## Deploying a Kubernetes Cluster on Google Cloud (GKE)
+
+Replace the values according to your own account and project. 
+
+Make sure the role provisioning the resources have the following permissions:
+- roles/container.admin
+- roles/compute.networkAdmin
+- roles/iam.serviceAccountUser
+- compute.firewalls.create
+- compute.firewalls.update
+
 ```sh 
-minikube start --cpus=2 \
---memory='3g' \
---nodes=3
+terraform init
+terraform apply -var-file=variables.tfvars --auto-approve
 ```
 
-## Storage class
-After creating a minikube cluster, there're some caveats that needs to be addressed. The minikube's default storage class don`t work with more than 1 node by design, which means kafka will fail as it needs to write files on disk. To fix the issue, we need to remove the default storage class, and then create another one that works with multi node
+Wait until the cluster is created
+
+## Connect to GCP and configure kubectl
 
 ```sh 
-kubectl delete sc default
+gcloud auth login
+```
 
-kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.30/deploy/local-path-storage.yaml
+```sh 
+gcloud config set project <your-project-name>
+```
+
+```sh 
+gcloud container clusters get-credentials cluster-streaming-analytics \
+    --region=us-central1-a
 ```
 
 ## Strimzi Kafka
@@ -37,7 +55,7 @@ Following strimzi best practices, it is recommended to deploy the operator and o
 ```sh 
 kubectl create namespace kafka -> where our kafka components will be deployed
 
-kubeclt create namespace kafka-operator -> where kafka operator will be deployed
+kubectl create namespace kafka-operator -> where kafka operator will be deployed
 ```
 
 Select the namespace to deploy the strimzi operator
@@ -66,13 +84,20 @@ Now that strimzi operator is configured, it's time to deploy our kafka cluster, 
 Apply the configuration
 
 ```sh 
-kubectl apply -f strimzi/examples/kafka/kraft/kafka-with-dual-role-nodes.yaml
+kubectl apply -f strimzi/examples/kafka/kraft/kafka-with-dual-role-nodes.yaml -n kafka
 ```
 
 Install kafka connect
 
 ```sh 
-kubectl apply -f strimzi/examples/connect/kafka-connect.yaml
+kubectl apply -f strimzi/examples/connect/kafka-connect.yaml -n kafka
+```
+
+
+create a topic using the kafka operator
+
+```sh 
+kubectl apply -f strimzi/examples/topic/website-events.yaml -n kafka
 ```
 
 # Running the Python Producer
@@ -95,6 +120,21 @@ Activate the virtual env
 source .venv/bin/activate
 ```
 
+Port-forward your cluster service
+```sh 
+kubectl port-forward service/kafka-cluster-kafka-plain-bootstrap 9092:9092
+```
+
+Test your python producer
+```sh 
+python producer.py
+```
+
+Verrify if your consumer can get the messages
+```sh 
+kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic website-events --from-beginning
+```
+
 # Deploying Apache Pinot
 
 Create a new Namespace
@@ -106,11 +146,3 @@ Add the repo
 ```sh 
 helm repo add pinot https://raw.githubusercontent.com/apache/pinot/master/helm
 ```
-
-helm install pinot pinot/pinot \
-    -n pinot \
-    --set cluster.name=pinot \
-    --set server.replicaCount=2 \
-    --set controller.persistence.storageClass="local-path" \
-    --set server.persistence.storageClass="local-path" \
-    --set minionStateless.persistence.storageClass="local-path"

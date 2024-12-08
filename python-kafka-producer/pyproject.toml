@@ -2,7 +2,7 @@
 name = "python-kafka-producer"
 version = "0.1.0"
 description = ""
-authors = ["jfrsbg <comerciall.jeferson@gmail.com>"]
+authors = ["jfrsbg <jfrsbg@email.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]

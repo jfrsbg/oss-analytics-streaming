@@ -36,6 +36,7 @@ controller:
   resources:
     requests:
       memory: "1.25Gi"
+      cpu: "500m"
 
   # Extra configs will be appended to pinot-controller.conf file
   extra:
@@ -139,6 +140,7 @@ broker:
   resources:
     requests:
       memory: "1.25Gi"
+      cpu: "500m"
 
   nodeSelector: {}
 
@@ -255,6 +257,7 @@ server:
   resources:
     requests:
       memory: "1.25Gi"
+      cpu: "500m"
 
 
 # ------------------------------------------------------------------------------
@@ -292,6 +295,7 @@ minionStateless:
   resources:
     requests:
       memory: "1.25Gi"
+      cpu: "500m"
 
   nodeSelector: {}
 
@@ -345,6 +349,7 @@ zookeeper:
   resources:
     requests:
       memory: "1.25Gi"
+      cpu: "500m"
 
   ## Replicas
   replicaCount: 1
