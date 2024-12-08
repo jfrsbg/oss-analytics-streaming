@@ -1,5 +1,5 @@
 #provider
-project_id       = "data-ana-443821"
+project_id       = "<your_project_id>"
 credentials_path = "~/Documents/oss-analytics-streaming/gcloud-credentials.json"
 region           = "us-central1"
 
