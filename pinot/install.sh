@@ -7,7 +7,7 @@ HELM_REPO_NAME="pinot"
 HELM_REPO_URL="https://raw.githubusercontent.com/apache/pinot/refs/tags/release-1.1.0/helm/"
 STORAGE_CLASS="standard"
 CPU_REQUEST="500m"
-MEMORY_REQUEST="2Gi"
+MEMORY_REQUEST="1Gi"
 
 # Create Kubernetes namespace if it doesn't exist
 if ! kubectl get namespace $NAMESPACE >/dev/null 2>&1; then
