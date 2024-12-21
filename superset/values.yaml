@@ -63,9 +63,18 @@ persistence:
   enabled: true
   size: 2Gi
   accessMode: ReadWriteOnce
-  storageClass: local-path
+  storageClass: local-path #local only
 
-postgresql:
-  primary:
-    persistence:
-      storageClass: local-path
+#local only
+# postgresql:
+#   primary:
+#     persistence:
+#       storageClass: local-path
+
+extraConfigs:
+  datasources.yaml: |
+    databases:
+    - database_name: pinot
+      sqlalchemy_uri: pinot+http://pinot-broker.pinot:8099/query?controller=http://pinot-controller.pinot:9000
+      allow_csv_upload: false
+      expose_in_sqllab: true
