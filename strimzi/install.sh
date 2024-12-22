@@ -48,8 +48,8 @@ echo "Deploying Kafka cluster in kafka namespace"
 kubectl apply -f examples/kafka/kraft/kafka-with-dual-role-nodes.yaml -n kafka
 
 # Deploy Kafka-Connect cluster
-echo "Deploying Kafka-Connect cluster in kafka namespace"
-kubectl apply -f examples/connect/kafka-connect.yaml -n kafka
+# echo "Deploying Kafka-Connect cluster in kafka namespace"
+# kubectl apply -f examples/connect/kafka-connect.yaml -n kafka
 
 # Create a topic using the Kafka operator
 echo "Creating Kafka topic in kafka namespace"

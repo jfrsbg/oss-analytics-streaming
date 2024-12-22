@@ -11,8 +11,8 @@ spec:
     - broker
   resources:
     requests:
-      memory: 3Gi
-      cpu: 500m
+      memory: 2Gi
+      cpu: 300m
   storage:
     type: jbod
     volumes:
@@ -54,5 +54,5 @@ spec:
       resources:
         requests:
           memory: 512Mi
-          cpu: 500m
+          cpu: 100m
     #userOperator: {}

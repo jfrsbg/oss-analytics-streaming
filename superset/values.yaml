@@ -6,7 +6,7 @@ image:
   pullPolicy: IfNotPresent
 
 service:
-  type: NodePort
+  type: LoadBalancer
   nodePort:
     # -- (int)
     http: 30088
@@ -59,20 +59,14 @@ configOverrides:
   secret: |
     SECRET_KEY = ''
 
-persistence:
-  enabled: true
-  size: 2Gi
-  accessMode: ReadWriteOnce
-  storageClass: local-path #local only
 
-#local only
-# postgresql:
-#   primary:
-#     persistence:
-#       storageClass: local-path
+postgresql:
+  primary:
+    persistence:
+      storageClass: standard
 
 extraConfigs:
-  datasources.yaml: |
+  import_datasources.yaml: |
     databases:
     - database_name: pinot
       sqlalchemy_uri: pinot+http://pinot-broker.pinot:8099/query?controller=http://pinot-controller.pinot:9000
